@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default defineNuxtPlugin(nuxtApp => {
-    const domain = 'https://cms-project.onrender.com/api/'
+    const domain = 'http://localhost:1337/api/'
 
     let api = axios.create({
         baseURL: domain,

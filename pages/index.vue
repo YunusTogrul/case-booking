@@ -6,7 +6,7 @@
                         <div v-for="aparment in apartments" v-bind:key="aparment" class="group relative bg-gray-100 m-1">
                               <div
                                     class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                                    <img :src="'http://localhost:1337' + aparment.attributes.Photo.data[0].attributes.url"
+                                    <img :src="aparment.attributes.Photo.data.attributes.url"
                                           class="h-full w-full object-cover object-center lg:h-full lg:w-full">
                               </div>
                               <div class="bottom-10 absolute w-full">

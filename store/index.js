@@ -41,7 +41,7 @@ export const useApiStore = defineStore({
                 inventoryPhotoData.append("files", element.inventoryPhoto, element.inventoryPhoto.name)
                 const responseInventoryPhoto = await $api.post("/upload", inventoryPhotoData)
                 const dataInventoryPhoto = await responseInventoryPhoto.data;
-                formData.data.Inventory.push({ Name: element.attributes.Name, Icon: element.attributes.Icon, Photo: dataInventoryPhoto[0].id, "__component": "inventory.inventory" })
+                formData.data.Inventory.push({ Name: element.attributes.Name, Icon: element.attributes.Icon, Photo: dataInventoryPhoto[0].id, "__component": "component.inventory" })
             }
             console.log(formData)
             const response1 = await $api.post("/apartments", formData)
