@@ -13,9 +13,9 @@
 import { useApiStore } from '@/store'
 import { storeToRefs } from 'pinia'
 let { filters } = storeToRefs(useApiStore())
-const onSearch = () => {
+const onSearch = async () => {
     const store = useApiStore()
-    store.getApartments();
+    await store.getApartments();
 }
 </script>
 

@@ -9,20 +9,29 @@
                     </label>
                     <input v-model="formValue.address" :disabled="isPreview" type="text" placeholder="Address"
                         class="w-full input input-bordered bg-white" />
+                    <label v-show="!formValidaton.address" class="label">
+                        <span class="label-text-alt text-error font-bold">Not empty and size must 3-10!</span>
+                    </label>
                 </div>
                 <div>
                     <label class="label">
                         <span class="text-base label-text">Floor</span>
                     </label>
-                    <input v-model="formValue.floor" :disabled="isPreview" type="text" placeholder="Floor"
+                    <input v-model="formValue.floor" :disabled="isPreview" type="number" placeholder="Floor"
                         class="w-full input input-bordered bg-white" />
+                    <label v-show="!formValidaton.floor" class="label">
+                        <span class="label-text-alt text-error font-bold">Not empty!</span>
+                    </label>
                 </div>
                 <div>
                     <label class="label">
                         <span class="text-base label-text">Door Number</span>
                     </label>
-                    <input v-model="formValue.doorNumber" :disabled="isPreview" type="text" placeholder="Door Number"
+                    <input v-model="formValue.doorNumber" :disabled="isPreview" type="number" placeholder="Door Number"
                         class="w-full input input-bordered bg-white" />
+                    <label v-show="!formValidaton.doorNumber" class="label">
+                        <span class="label-text-alt text-error font-bold">Not empty!</span>
+                    </label>
                 </div>
 
                 <div>
@@ -31,19 +40,27 @@
                     </label>
                     <input :disabled="isPreview" @change="changeApartmentPhoto($event)" type="file"
                         class="file-input w-full max-w-xs bg-white" />
+                    <label v-show="!formValidaton.photoApartment" class="label">
+                        <span class="label-text-alt text-error font-bold">Not empty!</span>
+                    </label>
                 </div>
 
                 <div>
                     <label class="label">
                         <span class="text-base label-text">Item list for apartment</span>
                     </label>
-                    <div class="flex justify-stretch">
-                        <select :disabled="isPreview" v-model="selectedId"
-                            class="select select-bordered w-full max-w-xs bg-white">
-                            <option disabled selected>Pick</option>
-                            <option v-for="element in elements" v-bind:key="element" :value="element.id">{{
-                                element.attributes.Name }}</option>
-                        </select>
+                    <div class="flex justify-strech">
+                        <div class="form-control w-full max-w-xs">
+                            <select :disabled="isPreview" v-model="selectedId"
+                                class="select select-bordered w-full max-w-xs bg-white">
+                                <option disabled selected>Pick</option>
+                                <option v-for="element in elements" v-bind:key="element" :value="element.id">{{
+                                    element.attributes.Name }}</option>
+                            </select>
+                            <label v-show="!formValidaton.listInventory" class="label">
+                                <span class="label-text-alt text-error font-bold">Not empty! And select photo!</span>
+                            </label>
+                        </div>
                         <button :disabled="isPreview" type="button" @click="addElements" class="ml-1 btn">Add</button>
                     </div>
                     <div class="mt-1">
@@ -92,6 +109,13 @@ const { elements } = storeToRefs(store)
 let selectedElements = ref([])
 let selectedId = ref()
 let isPreview = ref(false)
+let formValidaton = ref({
+    address: true,
+    floor: true,
+    doorNumber: true,
+    photoApartment: true,
+    listInventory: true,
+})
 let formValue = ref({
     address: "",
     floor: "",
@@ -115,7 +139,49 @@ const removeElements = (x) => {
     selectedElements.value.splice(x, 1);
 }
 const changePreviewMode = () => {
-    isPreview.value = !isPreview.value
+    formValue.value["inventory"] = selectedElements.value
+
+    formValidaton.value.address = true
+    if (formValue.value.address != "") {
+        if (formValue.value.address.length < 3 || formValue.value.address.length > 10) {
+            formValidaton.value.address = false
+        }
+    } else {
+        formValidaton.value.address = false
+    }
+
+    formValidaton.value.floor = true
+    if (formValue.value.floor == "") {
+        formValidaton.value.floor = false
+    }
+
+    formValidaton.value.doorNumber = true
+    if (formValue.value.doorNumber == "") {
+        formValidaton.value.doorNumber = false
+    }
+
+    formValidaton.value.photoApartment = true
+    if (!(formValue.value.photoApartment.name !== undefined)) {
+        formValidaton.value.photoApartment = false
+    }
+
+    formValidaton.value.listInventory = true
+    if (formValue.value.inventory.length == 0) {
+        formValidaton.value.listInventory = false
+    }
+
+    if (formValue.value.inventory.length > 0) {
+        for (let index = 0; index < formValue.value.inventory.length; index++) {
+            const element = formValue.value.inventory[index];
+            if (!(element.inventoryPhoto.name !== undefined)) {
+                formValidaton.value.listInventory = false
+            }
+        }
+    }
+
+    if (useEvery(Object.values(formValidaton.value))) {
+        isPreview.value = !isPreview.value
+    }
 }
 const changeApartmentPhoto = (event) => {
     let uploadedFiles = event.target.files;
@@ -134,10 +200,9 @@ const changeInventoryPhoto = (event, index) => {
     }
 }
 const sendForm = () => {
-    formValue.value["inventory"] = selectedElements.value
-    console.log(formValue.value)
     store.postPicture(formValue.value)
 }
+
 </script>
 
 <style></style>

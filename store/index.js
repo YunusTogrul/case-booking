@@ -7,6 +7,7 @@ export const useApiStore = defineStore({
         elements: {},
         filters: { Address: "", Floor: "", DoorNumber: "" },
         filtersParams: "",
+        isReady: false,
     }),
     actions: {
         async getApartments() {
@@ -15,6 +16,12 @@ export const useApiStore = defineStore({
             const response = await $api.get("/apartments?populate=*" + this.filtersParams)
             const data = await response.data;
             this.apartments = data.data;
+        },
+        async getApartment(id) {
+            const { $api } = useNuxtApp();
+            const response = await $api.get(`/apartments/${id}?populate=deep`)
+            const data = await response.data;
+            return data;
         },
         async getElements() {
             const { $api } = useNuxtApp();
@@ -43,10 +50,8 @@ export const useApiStore = defineStore({
                 const dataInventoryPhoto = await responseInventoryPhoto.data;
                 formData.data.Inventory.push({ Name: element.attributes.Name, Icon: element.attributes.Icon, Photo: dataInventoryPhoto[0].id, "__component": "component.inventory" })
             }
-            console.log(formData)
             const response1 = await $api.post("/apartments", formData)
             const data1 = await response1.data;
-            console.log(data1)
         },
         filterParamsSet() {
             this.filtersParams = ""
