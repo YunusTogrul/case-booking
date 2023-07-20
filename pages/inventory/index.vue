@@ -9,12 +9,32 @@
 import Filterbar from '~/components/Filterbar'
 import Contentseditbar from '~/components/Contentseditbar';
 import { useApiStore } from '@/store'
-import { storeToRefs } from 'pinia'
-const { apartments } = storeToRefs(useApiStore())
+const { $toast } = useNuxtApp();
+
 const store = useApiStore()
+let success = isSuccess()
+let deleted = isDeleted()
+
 onMounted(async () => {
       store.filterClear()
-      store.getApartments();
+
+      if (success.value != undefined) {
+            $toast.remove(success.value)
+            success.value = undefined
+            $toast.success('New data created!');
+      }
+
+      watch(deleted, (newConfig) => {
+            console.log(newConfig)
+            if (newConfig != undefined) {
+                  $toast.remove(newConfig)
+                  deleted.value = undefined
+                  $toast.error('Data deleted!');
+                  store.getApartments();
+            }
+      });
+
+
 })
 </script>
 

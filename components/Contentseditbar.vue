@@ -8,7 +8,8 @@
         <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             <div v-for="aparment in apartments" v-bind:key="aparment" class="group relative m-1">
                 <div class="bg-white p-1 mt-4 flex justify-end">
-                    <button class="btn btn-circle btn-error btn-xs"><i class="fa-solid fa-xmark"></i></button>
+                    <button @click="deleteItem(aparment.id)" class="btn btn-circle btn-error btn-xs"><i
+                            class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div
                     class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
@@ -49,6 +50,9 @@
 import { useApiStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import Loading from '~/components/Loading';
+const router = useRouter();
+const { $toast } = useNuxtApp();
+let deleted = isDeleted()
 const { apartments, isReady } = storeToRefs(useApiStore())
 const store = useApiStore()
 onMounted(async () => {
@@ -57,6 +61,13 @@ onMounted(async () => {
     await store.getApartments();
     isReady.value = true
 })
+
+const deleteItem = async (id) => {
+    console.log(id)
+    let toastId = $toast.warn('Data is deleting', { isLoading: true });
+    await store.deleteData(id)
+    deleted.value = toastId
+}
 
 </script>
 

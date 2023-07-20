@@ -92,7 +92,7 @@
 
                 <div class="flex justify-end">
                     <button @click="changePreviewMode" type="button" class="btn btn-info">Preview</button>
-                    <button @click="sendForm" :disabled="!isPreview" type="button"
+                    <button @click="sendForm" :disabled="!isPreview || isStatusApprove" type="button"
                         class="btn ml-1 btn-success">Approve</button>
                 </div>
 
@@ -108,9 +108,11 @@ const router = useRouter();
 const { $toast } = useNuxtApp();
 const store = useApiStore()
 const { elements } = storeToRefs(store)
+let success = isSuccess()
 let selectedElements = ref([])
 let selectedId = ref()
 let isPreview = ref(false)
+let isStatusApprove = ref(false)
 let formValidaton = ref({
     address: true,
     floor: true,
@@ -202,8 +204,9 @@ const changeInventoryPhoto = (event, index) => {
     }
 }
 const sendForm = async () => {
+    isStatusApprove.value = true
+    success.value = $toast.info('Data is uploading', { isLoading: true });
     await store.postData(formValue.value)
-    $toast.success('Create new data!');
     router.push({ path: '/inventory' });
 }
 

@@ -67,6 +67,10 @@ export const useApiStore = defineStore({
         },
         filterClear() {
             this.filters = { Address: "", Floor: "", DoorNumber: "" }
+        },
+        async deleteData(id) {
+            const { $api } = useNuxtApp();
+            await $api.delete("/apartments/" + id)
         }
     }
 })
