@@ -104,6 +104,8 @@
 <script setup>
 import { useApiStore } from '@/store'
 import { storeToRefs } from 'pinia'
+const router = useRouter();
+const { $toast } = useNuxtApp();
 const store = useApiStore()
 const { elements } = storeToRefs(store)
 let selectedElements = ref([])
@@ -199,8 +201,10 @@ const changeInventoryPhoto = (event, index) => {
         selectedElements.value[index].inventoryPhoto = {}
     }
 }
-const sendForm = () => {
-    store.postPicture(formValue.value)
+const sendForm = async () => {
+    await store.postData(formValue.value)
+    $toast.success('Create new data!');
+    router.push({ path: '/inventory' });
 }
 
 </script>

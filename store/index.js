@@ -29,7 +29,7 @@ export const useApiStore = defineStore({
             const data = await response.data;
             this.elements = data.data;
         },
-        async postPicture(form) {
+        async postData(form) {
             const { $api } = useNuxtApp();
             let formData = {}
             let aparmentPhotoData = new FormData()
@@ -51,7 +51,7 @@ export const useApiStore = defineStore({
                 formData.data.Inventory.push({ Name: element.attributes.Name, Icon: element.attributes.Icon, Photo: dataInventoryPhoto[0].id, "__component": "component.inventory" })
             }
             const response1 = await $api.post("/apartments", formData)
-            const data1 = await response1.data;
+            await response1.data;
         },
         filterParamsSet() {
             this.filtersParams = ""
